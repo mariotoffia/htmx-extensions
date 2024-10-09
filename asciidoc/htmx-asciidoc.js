@@ -8,65 +8,60 @@
 htmx.defineExtension('asciidoc', {
   onEvent: function (name, evt) {
     if (name === "htmx:beforeSwap") {
-      var xhr = evt.detail.xhr;
+      const xhr = evt.detail.xhr;
 
-      var contentType = xhr.getResponseHeader('Content-Type');
-      if (contentType && contentType.startsWith('text/asciidoc')) {
-        var targetElement = evt.detail.target;
+      const contentType = xhr.getResponseHeader('Content-Type');
+      if (contentType?.startsWith('text/asciidoc')) {
+        const targetElement = evt.detail.target;
 
-        // target has 'asciidoc-disable' -> raw content
+        // If target has 'asciidoc-disable', use raw content
         if (targetElement.hasAttribute('asciidoc-disable')) {
-          evt.detail.swapContent = xhr.responseText;
-          return; // Exit early without rendering the content
+          evt.detail.content = xhr.responseText;
+          return;
         }
 
+        let asciidoctor;
         try {
-          var asciidoctor = Asciidoctor(); // Ensure Asciidoctor.js is loaded
+          asciidoctor = Asciidoctor(); // Ensure Asciidoctor.js is loaded
         } catch (e) {
           console.error('Asciidoctor.js is not available. Ensure it is loaded on the page.');
           return;
         }
 
         // Helper function to retrieve attributes recursively
-        var attr = function (node, property) {
-          if (node == undefined) { return undefined }
+        const attr = function (node, property) {
+          if (!node) { return undefined; }
           return node.getAttribute(property) || node.getAttribute('data-' + property) || attr(node.parentElement, property);
-        }
-        var attributes = attr(targetElement, 'asciidoc-attributes');
-        var options = { attributes: {} };
+        };
+
+        const attributes = attr(targetElement, 'asciidoc-attributes');
+        const options = { attributes: {} };
 
         if (attributes) {
-          attributes.split(',').forEach(function (attr) {
-            var [key, value] = attr.split('=');
-            if (value === undefined) {
-              options.attributes[key.trim()] = '';
+          attributes.split(',').forEach(function (attrStr) {
+            const index = attrStr.indexOf('=');
+            let key, value;
+            if (index > -1) {
+              key = attrStr.slice(0, index).trim();
+              value = attrStr.slice(index + 1).trim();
             } else {
-              options.attributes[key.trim()] = value.trim();
+              key = attrStr.trim();
+              value = '';
             }
+            options.attributes[key] = value;
           });
         }
 
-        var stylesheetUrl = attr(targetElement, 'asciidoc-stylesheet');
+        const stylesheetUrl = attr(targetElement, 'asciidoc-stylesheet');
         if (stylesheetUrl) {
-          // Fetch the stylesheet and scope the styles
-          fetch(stylesheetUrl)
-            .then(response => response.text())
-            .then(cssContent => {
-              // Prefix all CSS selectors with the target element's ID or class
-              const scopedCssContent = cssContent.replace(/(^|\s)([^\s,{]+)/g, `$1#${targetElement.id} $2`);
-              // Create a <style> element and inject the scoped CSS content into the target element
-              const styleTag = document.createElement('style');
-              styleTag.textContent = scopedCssContent;
-              targetElement.prepend(styleTag);
-            })
-            .catch(error => {
-              console.error('Failed to load stylesheet:', stylesheetUrl, error);
-            });
+          options.attributes['stylesheet'] = stylesheetUrl;
+          options.attributes['linkcss'] = true;
         }
+
         // Convert the AsciiDoc response to HTML
-        var htmlContent = asciidoctor.convert(xhr.responseText, options);
+        const htmlContent = asciidoctor.convert(xhr.responseText, options);
         // Set the content to be swapped into the target element
-        evt.detail.serverResponse = htmlContent;
+        evt.detail.content = htmlContent;
       }
     }
   }

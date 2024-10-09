@@ -17,7 +17,7 @@ It is possible to include _AsciiDoc_ content in your _HTML_ using the `hx-ext="a
 <div id="content"></div>
 ----
 
-NOTE: It is possible to enable it wherever so you do not need to enable it per element.
+NOTE: It is possible to enable it wherever so you do not need to enable it per element. It also supports traversing parent elements to get the attributes.
 
 When the server returns a content type of `text/asciidoc`, the extension will render the _AsciiDoc_ content in the target element.
 
