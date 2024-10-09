@@ -4,26 +4,6 @@
  * (https://github.com/mariotoffia/htmx-extensions)
  * 
  * Released under the Apache 2.0 License.
- * 
- * This is a simple HTMX extension that allows you to render AsciiDoc content when the server returns 
- * a response with the Content-Type of 'text/asciidoc'.
- * 
- * To use this extension, include the following script tag in your HTML:
- * 
- * <script src="https://cdn.jsdelivr.net/npm/asciidoctor@2.2.8/dist/browser/asciidoctor.js"></script>
- * <script src="hx-asciidoc.js"></script>
- * 
- * Then, whenever you make an HTMX request that returns AsciiDoc content, the extension will render
- * the content as HTML. You can also pass in AsciiDoc attributes by adding an `asciidoc-attributes`.
- * 
- * For example:
- * 
- * <button hx-ext="asciidoc" hx-get="/path/to/your.asciidoc" hx-target="#content" hx-swap="innerHTML" asciidoc-attributes="showtitle=true,sectnums=true">
- *   Load AsciiDoc
- * </button>
- * <div id="content"></div>
- * 
- * NOTE: If the _asciidoc-disable_ attribute is present on the target element, the AsciiDoc content will be passed directly.
  **/
 htmx.defineExtension('asciidoc', {
   onEvent: function (name, evt) {

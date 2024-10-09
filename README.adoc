@@ -1,0 +1,26 @@
+= htmx-extensions
+Repository for my htmx extensions
+
+== htmx-asciidoc
+This extension allows you to include _AsciiDoc_ files in your _HTML_ using htmx.
+
+In order to use it, make sure that you've loaded _asciidoctor.js_ and _htmx-asciidoc.js_ in your _HTML_.
+[source,html]
+----
+<script src="https://cdn.jsdelivr.net/npm/asciidoctor@2.2.8/dist/browser/asciidoctor.js"></script>
+<script src="https://raw.githubusercontent.com/mariotoffia/htmx-extensions/refs/heads/main/asciidoc/htmx-asciidoc.js"></script>
+----
+
+Now it is possible to include _AsciiDoc_ content in your _HTML_ using the `hx-ext="asciidoc"` attribute. For example:
+
+[source,html]
+----
+<button hx-ext="asciidoc" hx-get="/path/to/your.asciidoc" hx-target="#content" hx-swap="innerHTML" asciidoc-attributes="showtitle=true,sectnums=true">
+  Load AsciiDoc
+</button>
+<div id="content"></div>
+----
+
+When the server returns a content type of `text/asciidoc`, the extension will render the _AsciiDoc_ content in the target element.
+
+It is possible to disable the rendering of `text/asciidoc` content by adding the _asciidoc-disable_ attribute to the element. Then the extension will pass-through the content to the target element un-rendered.
