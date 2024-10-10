@@ -33,7 +33,7 @@ In order to use it, make sure that you've loaded _asciidoctor.js_ and _htmx-asci
     <link href="https://cdn.jsdelivr.net/npm/@asciidoctor/core@2.2.8/dist/css/asciidoctor.min.css" rel="stylesheet"> // <1>
     <script src="https://cdn.jsdelivr.net/npm/@asciidoctor/core@3.0.4/dist/browser/asciidoctor.min.js"></script>
     <script src="https://unpkg.com/htmx.org@2.0.2/dist/htmx.min.js"></script> // <2>
-    <script src="https://cdn.jsdelivr.net/gh/mariotoffia/htmx-extension@v0.0.1/asciidoc/htmx-asciidoc.js"></script> // <3>
+    <script src="https://cdn.jsdelivr.net/gh/mariotoffia/htmx-extensions@v0.0.2/asciidoc/htmx-asciidoc.js"></script> // <3>
 </head>
 ----
 <1> Add some default _asciidoc_ styles.
