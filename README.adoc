@@ -6,7 +6,7 @@ This extension allows you to include _AsciiDoc_ files in your _HTML_ using htmx.
 
 TIP: 💡 Run the example by `cd examples/asciidoc; go run main.go` and open http://localhost:8080 in your browser to test it out.
 
-It is possible to include _AsciiDoc_ content in your _HTML_ using the `hx-ext="asciidoc"` attribute. For example:
+It will make it possible to include _AsciiDoc_ content in your _HTML_ using the `hx-ext="asciidoc"` attribute.
 
 [source,html]
 ----
@@ -21,8 +21,6 @@ It is possible to include _AsciiDoc_ content in your _HTML_ using the `hx-ext="a
 </body>
 ----
 
-NOTE: It is possible to enable it wherever so you do not need to enable it per element. It also supports traversing parent elements to get the attributes.
-
 When the server returns a content type of `text/asciidoc`, the extension will render the _AsciiDoc_ content in the target element.
 
 It is possible to disable the rendering of `text/asciidoc` content by adding the _asciidoc-disable_ attribute to the element. Then the extension will pass-through the content to the target element un-rendered.
@@ -33,7 +31,7 @@ In order to use it, make sure that you've loaded _asciidoctor.js_ and _htmx-asci
 ----
 <head>
     <link href="https://cdn.jsdelivr.net/npm/@asciidoctor/core@2.2.8/dist/css/asciidoctor.min.css" rel="stylesheet"> // <1>
-    <script src="https://cdn.jsdelivr.net/npm/@asciidoctor/core@2.2.8/dist/browser/asciidoctor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@asciidoctor/core@3.0.4/dist/browser/asciidoctor.min.js"></script>
     <script src="https://unpkg.com/htmx.org@2.0.2/dist/htmx.min.js"></script> // <2>
     <script src="htmx-asciidoc.js"></script> // <3>
 </head>
@@ -45,3 +43,6 @@ In order to use it, make sure that you've loaded _asciidoctor.js_ and _htmx-asci
 NOTE: You need to serve the _asciidoctor.js_ file from your server (in this setup).
 
 If you have styles that will be affected by the asciidoc styles, you can include them using _asciidoc-stylesheet_ attribute. It will then inline the styles by scoping them to the target element.
+
+=== Custom Asciidoctor Binding
+You may publish the Asciidoctor instance on the window object, the _htmx-asciidoc_ extension will pick this up first. Then it will try to find the 3.x style asciidoc module, lastly the 2.x style global _Asciidoctor_ object.

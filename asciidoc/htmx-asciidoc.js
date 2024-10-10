@@ -20,13 +20,23 @@ htmx.defineExtension('asciidoc', {
           return;
         }
 
-        // Use the global Asciidoctor object instead of require
-        if (typeof Asciidoctor === 'undefined') {
-          console.error('asciidoctor.js is not available. Ensure it is loaded on the page.');
-          return;
+        // If user has custom hooked up it to the window object
+        let asciidoctor = window.Asciidoctor;
+
+        if (!asciidoctor) {
+          // Check if 3.x style
+          if (typeof Asciidoctor$$module$build$asciidoctor_browser === 'function') {
+            asciidoctor = Asciidoctor$$module$build$asciidoctor_browser();
+          } else {
+            // No -> 2.x style          
+            if (typeof Asciidoctor === 'undefined') {
+              console.error('asciidoctor.js is not available. Ensure it is loaded on the page.');
+              return;
+            }
+
+            asciidoctor = Asciidoctor();
+          }
         }
-        
-        const asciidoctor = Asciidoctor();
 
         // Helper function to retrieve attributes recursively
         const attr = function (node, property) {
