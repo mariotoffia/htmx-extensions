@@ -1,9 +1,11 @@
 {
   "cSpell.words": [
+    "adoc",
     "asciidoctor",
     "HTMX",
     "sectnums",
     "showtitle",
     "Toffia"
-  ]
+  ],
+  "asciidoc.antora.enableAntoraSupport": true
 }

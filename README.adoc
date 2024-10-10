@@ -4,17 +4,21 @@ Repository for my htmx extensions
 == htmx-asciidoc
 This extension allows you to include _AsciiDoc_ files in your _HTML_ using htmx.
 
+TIP: 💡 Run the example by `cd examples/asciidoc; go run main.go` and open http://localhost:8080 in your browser to test it out.
+
 It is possible to include _AsciiDoc_ content in your _HTML_ using the `hx-ext="asciidoc"` attribute. For example:
 
 [source,html]
 ----
-<button hx-ext="asciidoc"
-        hx-get="/path/to/your.asciidoc" 
-        hx-target="#content"
-        asciidoc-attributes="showtitle=true,sectnums=true">
-  Load AsciiDoc
-</button>
-<div id="content"></div>
+<body hx-ext="asciidoc">
+    <button 
+            hx-get="/readme"
+            hx-target="#content"
+            asciidoc-attributes="showtitle=true,sectnums=true">
+        Load AsciiDoc
+    </button>
+    <div id="content"></div>
+</body>
 ----
 
 NOTE: It is possible to enable it wherever so you do not need to enable it per element. It also supports traversing parent elements to get the attributes.
@@ -27,6 +31,17 @@ It is possible to disable the rendering of `text/asciidoc` content by adding the
 In order to use it, make sure that you've loaded _asciidoctor.js_ and _htmx-asciidoc.js_ in your _HTML_.
 [source,html]
 ----
-<script src="https://cdn.jsdelivr.net/npm/asciidoctor@2.2.8/dist/browser/asciidoctor.js"></script>
-<script src="https://raw.githubusercontent.com/mariotoffia/htmx-extensions/refs/heads/main/asciidoc/htmx-asciidoc.js"></script>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/@asciidoctor/core@2.2.8/dist/css/asciidoctor.min.css" rel="stylesheet"> // <1>
+    <script src="https://cdn.jsdelivr.net/npm/@asciidoctor/core@2.2.8/dist/browser/asciidoctor.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.2/dist/htmx.min.js"></script> // <2>
+    <script src="htmx-asciidoc.js"></script> // <3>
+</head>
 ----
+<1> Add some default _asciidoc_ styles.
+<2> Since it is a _HTMX_ extension, load it after _HTMX_ itself.
+<3> Make sure to load this last so it will have access to the _asciidoctor_ object.
+
+NOTE: You need to serve the _asciidoctor.js_ file from your server (in this setup).
+
+If you have styles that will be affected by the asciidoc styles, you can include them using _asciidoc-stylesheet_ attribute. It will then inline the styles by scoping them to the target element.

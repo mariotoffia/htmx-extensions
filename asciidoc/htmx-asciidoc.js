@@ -20,13 +20,13 @@ htmx.defineExtension('asciidoc', {
           return;
         }
 
-        let asciidoctor;
-        try {
-          asciidoctor = Asciidoctor(); // Ensure Asciidoctor.js is loaded
-        } catch (e) {
-          console.error('Asciidoctor.js is not available. Ensure it is loaded on the page.');
+        // Use the global Asciidoctor object instead of require
+        if (typeof Asciidoctor === 'undefined') {
+          console.error('asciidoctor.js is not available. Ensure it is loaded on the page.');
           return;
         }
+        
+        const asciidoctor = Asciidoctor();
 
         // Helper function to retrieve attributes recursively
         const attr = function (node, property) {
@@ -54,14 +54,26 @@ htmx.defineExtension('asciidoc', {
 
         const stylesheetUrl = attr(targetElement, 'asciidoc-stylesheet');
         if (stylesheetUrl) {
-          options.attributes['stylesheet'] = stylesheetUrl;
-          options.attributes['linkcss'] = true;
+          // Fetch the stylesheet and scope the styles
+          fetch(stylesheetUrl)
+            .then(response => response.text())
+            .then(cssContent => {
+              // Prefix all CSS selectors with the target element's ID or class
+              const scopedCssContent = cssContent.replace(/(^|\s)([^\s,{]+)/g, `$1#${targetElement.id} $2`);
+              // Create a <style> element and inject the scoped CSS content into the target element
+              const styleTag = document.createElement('style');
+              styleTag.textContent = scopedCssContent;
+              targetElement.prepend(styleTag);
+            })
+            .catch(error => {
+              console.error('Failed to load stylesheet:', stylesheetUrl, error);
+            });
         }
 
         // Convert the AsciiDoc response to HTML
         const htmlContent = asciidoctor.convert(xhr.responseText, options);
         // Set the content to be swapped into the target element
-        evt.detail.content = htmlContent;
+        evt.detail.serverResponse = htmlContent;
       }
     }
   }
